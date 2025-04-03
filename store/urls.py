@@ -1,4 +1,8 @@
 from django.urls import path
-from .import views
+from . import views
 
-path('', views.store, name="store")  # Map URL "/" to the store view
+urlpatterns = [
+    path('', views.store, name="store"),
+    path('cart/', views.cart, name="cart"),
+    path('add_to_cart/<int:product_id>/', views.add_to_cart, name="add_to_cart"),
+]

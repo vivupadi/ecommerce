@@ -1,8 +1,15 @@
-<!-- templates/store/store.html -->
-{% for product in products %}
-  <div class="product">
-    <h3>{{ product.name }}</h3>  <!-- Show product name -->
-    <p>${{ product.price }}</p>  <!-- Show price -->
-    <button>Add to Cart</button> <!-- "Grab" button -->
-  </div>
-{% endfor %}
+{% extends 'store/base.html' %}
+
+{% block content %}
+<h1>Products</h1>
+<div class="products">
+    {% for product in products %}
+    <div class="product">
+        <h3>{{ product.name }}</h3>
+        <p>${{ product.price }}</p>
+        <button>Add to Cart</button>
+        <button onclick="window.location.href='{% url 'add_to_cart' product.id %}'">Add to Cart</button>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
