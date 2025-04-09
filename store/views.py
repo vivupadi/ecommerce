@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from .models import *
+from django.http import JsonResponse
+from django.conf import settings
+import stripe
 
 def store(request):
     products = Product.objects.all()
@@ -20,14 +23,30 @@ def cart(request):
 
 from django.shortcuts import redirect
 
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def add_to_cart(request, product_id):
-    product = Product.objects.get(id=product_id)
-    customer = request.user
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
-    orderItem.quantity += 1
-    orderItem.save()
-    return redirect('store')
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Get or create the order
+    order, created = Order.objects.get_or_create(
+        customer=request.user,
+        complete=False
+    )
+    
+    # Get or create the order item
+    order_item, created = OrderItem.objects.get_or_create(
+        order=order,
+        product=product
+    )
+    
+    if not created:
+        order_item.quantity += 1
+        order_item.save()
+    
+    return redirect('store')  # Redirect back to store page
 
 def checkout(request):
     if request.user.is_authenticated:

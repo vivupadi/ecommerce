@@ -31,3 +31,11 @@ class OrderItem(models.Model):
     @property
     def get_total(self):
         return self.product.price * self.quantity
+    
+class ShippingAddress(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    address = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    state = models.CharField(max_length=200)
+    zipcode = models.CharField(max_length=200)
